@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+/* seoul-inspired color theme and animations for urban scout */
+
+@theme {
+  --color-seoul-primary: #1E3A5F;
+  --color-seoul-primary-light: #3B82F6;
+  --color-seoul-secondary: #DC2626;
+  --color-seoul-accent: #F59E0B;
+  --color-seoul-bg: #FAF7F2;
+  --color-seoul-surface: #F3F4F6;
+  --color-seoul-text: #1F2937;
+  --color-seoul-muted: #6B7280;
+
+  --animate-slide-in: slideIn 0.5s ease-out;
+  --animate-fade-up: fadeUp 0.8s ease-out;
+  --animate-slow-zoom: slowZoom 20s ease-in-out infinite alternate;
+}
+
+@keyframes slideIn {
+  0% { opacity: 0; transform: translateX(30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slowZoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
