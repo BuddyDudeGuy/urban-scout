@@ -14,7 +14,6 @@ import PlaceDetailPage from './pages/PlaceDetailPage';
 import TransitPage from './pages/TransitPage';
 import NewsPage from './pages/NewsPage';
 import IncidentPage from './pages/IncidentPage';
-import MyReportsPage from './pages/MyReportsPage';
 import ItineraryPage from './pages/ItineraryPage';
 import ItineraryDetailPage from './pages/ItineraryDetailPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -42,7 +41,6 @@ export default function App() {
         <Route path="/transit" element={<ProtectedRoute role="user"><TransitPage /></ProtectedRoute>} />
         <Route path="/news" element={<ProtectedRoute role="user"><NewsPage /></ProtectedRoute>} />
         <Route path="/incidents/new" element={<ProtectedRoute role="user"><IncidentPage /></ProtectedRoute>} />
-        <Route path="/incidents/mine" element={<ProtectedRoute role="user"><MyReportsPage /></ProtectedRoute>} />
         <Route path="/itineraries" element={<ProtectedRoute role="user"><ItineraryPage /></ProtectedRoute>} />
         <Route path="/itineraries/:id" element={<ProtectedRoute role="user"><ItineraryDetailPage /></ProtectedRoute>} />
 
