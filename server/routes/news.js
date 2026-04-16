@@ -24,6 +24,15 @@ router.get('/', async (req, res) => {
     if (regionId) {
       query += ' WHERE np.RegionID = ?';
       params.push(regionId);
+    } else if (req.session.user) {
+      /*
+        no explicit region filter + a tourist is logged in =>
+        "All Regions" on the News page means "all my subscribed regions"
+      */
+      query += ` WHERE np.RegionID IN (
+        SELECT RegionID FROM Subscribes_to WHERE UserID = ?
+      )`;
+      params.push(req.session.user.UserID);
     }
 
     query += ' ORDER BY np.time_stamp DESC';
