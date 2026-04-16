@@ -94,21 +94,41 @@ export default function VerifyReports() {
             Reported by {incident.reporter_name} on {new Date(incident.timestamp).toLocaleDateString()}
           </p>
 
-          {/* confirm and reject buttons */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => handleVerify(incident.Report_ID, 'confirmed')}
-              className="flex-1 bg-green-500 text-white py-2 rounded-lg text-sm font-medium cursor-pointer hover:bg-green-600 transition-colors"
-            >
-              Confirm
-            </button>
-            <button
-              onClick={() => handleVerify(incident.Report_ID, 'rejected')}
-              className="flex-1 bg-red-500 text-white py-2 rounded-lg text-sm font-medium cursor-pointer hover:bg-red-600 transition-colors"
-            >
-              Reject
-            </button>
-          </div>
+          {/* show big confirm/reject buttons only for pending reports, otherwise just a tiny link to flip the status */}
+          {(!incident.verification_status || incident.verification_status === 'pending') ? (
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleVerify(incident.Report_ID, 'confirmed')}
+                className="flex-1 bg-green-500 text-white py-2 rounded-lg text-sm font-medium cursor-pointer hover:bg-green-600 transition-colors"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => handleVerify(incident.Report_ID, 'rejected')}
+                className="flex-1 bg-red-500 text-white py-2 rounded-lg text-sm font-medium cursor-pointer hover:bg-red-600 transition-colors"
+              >
+                Reject
+              </button>
+            </div>
+          ) : incident.verification_status === 'confirmed' ? (
+            <div className="flex justify-end">
+              <button
+                onClick={() => handleVerify(incident.Report_ID, 'rejected')}
+                className="text-xs text-gray-500 hover:text-red-600 underline cursor-pointer transition-colors"
+              >
+                Mark as rejected
+              </button>
+            </div>
+          ) : (
+            <div className="flex justify-end">
+              <button
+                onClick={() => handleVerify(incident.Report_ID, 'confirmed')}
+                className="text-xs text-gray-500 hover:text-green-600 underline cursor-pointer transition-colors"
+              >
+                Mark as confirmed
+              </button>
+            </div>
+          )}
         </div>
       ))}
     </div>

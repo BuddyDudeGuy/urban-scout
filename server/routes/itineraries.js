@@ -113,7 +113,7 @@ router.post('/:id/items', requireUser, async (req, res) => {
     /* insert the item */
     await pool.execute(
       'INSERT INTO ItineraryItem (ItineraryID, ItemNo, planned_time, notes) VALUES (?, ?, ?, ?)',
-      [itineraryId, itemNo, planned_time, notes]
+      [itineraryId, itemNo, planned_time || null, notes || null]
     );
 
     /* if they picked a place, link it in the References table */

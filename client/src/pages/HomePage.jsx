@@ -78,7 +78,7 @@ export default function HomePage() {
         {/* logout button pinned to the top-right of the hero */}
         <button
           onClick={logout}
-          className="absolute top-4 right-4 z-10 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium cursor-pointer hover:bg-white/30 transition-colors"
+          className="absolute top-4 right-4 z-20 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium cursor-pointer hover:bg-white/30 transition-colors"
         >
           Logout
         </button>
