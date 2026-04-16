@@ -52,9 +52,9 @@ INSERT INTO TransitRoute (RouteID, route_name, service_hours) VALUES
 
 -- Public Transit vehicles / services
 INSERT INTO PublicTransit (TransitID, route_label, capacity, fare_price, vehicle_type) VALUES
-(1, '1호선', 1500, 1.35, 'Subway'),
-(2, '2호선', 1600, 1.35, 'Subway'),
-(3, '4호선', 1400, 1.35, 'Subway'),
+(1, 'Line 1', 1500, 1.35, 'Subway'),
+(2, 'Line 2', 1600, 1.35, 'Subway'),
+(3, 'Line 4', 1400, 1.35, 'Subway'),
 (4, '370', 50, 1.35, 'Bus'),
 (5, 'KTX 101', 800, 45.00, 'Train');
 
