@@ -5,6 +5,8 @@
 import { useState, useEffect } from 'react';
 import api from '../../api';
 import { useAuth } from '../../context/AuthContext';
+import PageHeader from '../../components/PageHeader';
+import { capitalize } from '../../utils/placeFormat';
 
 export default function ManageNews() {
   const { admin } = useAuth();
@@ -67,16 +69,19 @@ export default function ManageNews() {
   const severities = ['low', 'medium', 'high'];
 
   return (
-    <div className="pb-20 p-4 max-w-lg mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Manage News</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm cursor-pointer hover:bg-blue-600 transition-colors"
-        >
-          {showForm ? 'Cancel' : '+ New Post'}
-        </button>
-      </div>
+    <div className="max-w-3xl mx-auto px-4 pb-24 pt-8">
+      <PageHeader
+        title="Manage News"
+        subtitle="Publish news posts and safety alerts"
+        action={
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="rounded-full bg-[#1E3A5F] text-white hover:bg-[#2d5a8e] px-5 py-2.5 text-sm font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {showForm ? 'Cancel' : '+ New Post'}
+          </button>
+        }
+      />
 
       {message && (
         <p className={`text-sm mb-3 ${message.includes('created') ? 'text-green-500' : 'text-red-500'}`}>
@@ -86,42 +91,42 @@ export default function ManageNews() {
 
       {/* create news post form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-4 mb-4">
+        <form onSubmit={handleSubmit} className="rounded-xl bg-white shadow-sm p-5 mb-4">
+          <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Title</label>
           <input
             type="text"
             placeholder="Post title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-2 border rounded-lg mb-3"
+            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-3"
             required
           />
 
           {/* severity selector buttons */}
-          <label className="block text-sm font-medium text-gray-600 mb-1">Severity</label>
+          <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Severity</label>
           <div className="flex gap-2 mb-3">
             {severities.map(s => (
               <button
                 key={s}
                 type="button"
                 onClick={() => setSeverity(s)}
-                className={`flex-1 py-2 rounded-lg text-sm cursor-pointer ${
+                className={`flex-1 rounded-full px-4 py-2 text-sm font-semibold cursor-pointer transition-colors ${
                   severity === s
-                    ? s === 'low' ? 'bg-green-500 text-white'
-                    : s === 'medium' ? 'bg-yellow-500 text-white'
-                    : 'bg-red-500 text-white'
-                    : 'bg-gray-100 text-gray-600'
+                    ? 'bg-[#1E3A5F] text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {s}
+                {capitalize(s)}
               </button>
             ))}
           </div>
 
+          <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Body</label>
           <textarea
             placeholder="Post body"
             value={bodyText}
             onChange={(e) => setBodyText(e.target.value)}
-            className="w-full p-2 border rounded-lg mb-3"
+            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-3"
             rows={3}
             required
           />
@@ -134,15 +139,16 @@ export default function ManageNews() {
               onChange={(e) => setAddAlert(e.target.checked)}
               className="cursor-pointer"
             />
-            <span className="text-sm">Include Safety Alert (optional)</span>
+            <span className="text-sm text-gray-700">Include Safety Alert (optional)</span>
           </label>
 
           {addAlert && (
             <div className="bg-red-50 p-3 rounded-lg mb-3">
+              <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Alert Type</label>
               <select
                 value={alertType}
                 onChange={(e) => setAlertType(e.target.value)}
-                className="w-full p-2 border rounded-lg mb-2 bg-white cursor-pointer"
+                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-2 cursor-pointer"
                 required
               >
                 <option value="">Alert type...</option>
@@ -150,17 +156,21 @@ export default function ManageNews() {
                   <option key={t} value={t}>{t.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>
                 ))}
               </select>
+              <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Affected Area</label>
               <input
                 type="text"
                 placeholder="Affected area"
                 value={areaText}
                 onChange={(e) => setAreaText(e.target.value)}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors"
               />
             </div>
           )}
 
-          <button type="submit" className="w-full bg-green-500 text-white py-2 rounded-lg cursor-pointer hover:bg-green-600 transition-colors">
+          <button
+            type="submit"
+            className="w-full rounded-full bg-[#1E3A5F] text-white hover:bg-[#2d5a8e] px-5 py-3 text-sm font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             Publish
           </button>
         </form>
@@ -168,27 +178,29 @@ export default function ManageNews() {
 
       {/* existing news posts */}
       {news.map(post => (
-        <div key={`${post.NewsID}-${post.AlertNo || 0}`} className="bg-white rounded-lg shadow p-4 mb-3">
-          <div className="flex justify-between items-start">
-            <h3 className="font-bold">{post.title}</h3>
-            <span className={`text-xs px-2 py-1 rounded ${
+        <div key={`${post.NewsID}-${post.AlertNo || 0}`} className={`rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow p-5 mb-4 ${post.alert_type ? 'border-l-4 border-red-400' : ''}`}>
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="font-bold text-gray-900">{post.title}</h3>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
               post.severity === 'high' ? 'bg-red-100 text-red-700' :
               post.severity === 'medium' ? 'bg-yellow-100 text-yellow-700' :
               'bg-green-100 text-green-700'
             }`}>
-              {post.severity}
+              {capitalize(post.severity)}
             </span>
           </div>
-          <p className="text-sm text-gray-600 mt-1">{post.body_text}</p>
-          <p className="text-xs text-gray-400 mt-2">
-            {new Date(post.time_stamp).toLocaleDateString()}
-          </p>
+          <p className="text-sm text-gray-600 mb-3 leading-relaxed">{post.body_text}</p>
           {post.alert_type && (
-            <div className="mt-2 p-2 bg-red-50 rounded border border-red-200">
-              <p className="text-xs font-bold text-red-600">Alert: {post.alert_type}</p>
-              <p className="text-xs text-red-500">{post.area_text}</p>
+            <div className="bg-red-50 p-3 rounded-lg mb-3">
+              <p className="text-sm font-semibold text-red-700">
+                {post.alert_type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+              </p>
+              {post.area_text && <p className="text-sm text-red-600 mt-1">{post.area_text}</p>}
             </div>
           )}
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>{new Date(post.time_stamp).toLocaleDateString()}</span>
+          </div>
         </div>
       ))}
     </div>
