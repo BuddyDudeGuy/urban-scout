@@ -123,6 +123,7 @@ router.get('/:id', async(req, res) => {
     }
 });
 
+const { requireAdmin } = require('../middleware/auth');
 router.post('/', requireAdmin, async(req, res) => {
     const conn = await pool.getConnection();
 
