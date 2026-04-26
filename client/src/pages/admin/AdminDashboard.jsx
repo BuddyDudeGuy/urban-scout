@@ -60,10 +60,10 @@ export default function AdminDashboard() {
           <p className="text-2xl font-bold text-blue-500">{stats.news.length}</p>
           <p className="text-xs text-gray-500">News Posts</p>
         </Link>
-        <div className="bg-white rounded-lg shadow p-4 text-center cursor-pointer hover:shadow-lg transition-all">
+        <Link to="/admin/places" className="bg-white rounded-lg shadow p-4 text-center cursor-pointer hover:shadow-lg transition-all">
           <p className="text-2xl font-bold text-green-500">{stats.region?.placeCount || 0}</p>
           <p className="text-xs text-gray-500">Places</p>
-        </div>
+        </Link>
         <div className="bg-white rounded-lg shadow p-4 text-center cursor-pointer hover:shadow-lg transition-all">
           <p className="text-2xl font-bold text-purple-500">{stats.incidents.length}</p>
           <p className="text-xs text-gray-500">Total Reports</p>
