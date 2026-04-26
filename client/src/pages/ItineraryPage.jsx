@@ -44,6 +44,7 @@ export default function ItineraryPage() {
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [reminders, setReminders] = useState([]);
 
   /*
    * snapshot of "today" at local midnight - used as the floor for the date pickers
@@ -60,7 +61,12 @@ export default function ItineraryPage() {
     setItineraries(res.data);
   };
 
-  useEffect(() => { loadItineraries(); }, []);
+  const loadReminders = async () => {
+  const res = await api.get('/api/itineraries/reminders/upcoming');
+  setReminders(Array.isArray(res.data) ? res.data : []);
+};
+
+  useEffect(() => { loadItineraries(); loadReminders(); }, []);
 
   /*
    * create a new itinerary
@@ -77,6 +83,7 @@ export default function ItineraryPage() {
     setEndDate('');
     setShowForm(false);
     loadItineraries();
+    loadReminders();
   };
 
   /*
@@ -85,6 +92,7 @@ export default function ItineraryPage() {
   const handleDelete = async (id) => {
     await api.delete(`/api/itineraries/${id}`);
     loadItineraries();
+    loadReminders();
   };
 
   /*
@@ -123,6 +131,20 @@ export default function ItineraryPage() {
           </button>
         }
       />
+
+      {reminders.length > 0 && (
+  <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 mb-6">
+    <h2 className="font-semibold text-amber-900 mb-2">Upcoming Trip Reminder</h2>
+    <div className="space-y-2">
+      {reminders.map((trip) => (
+        <div key={trip.ItineraryID} className="text-sm text-amber-800">
+          <span className="font-medium">{trip.title}</span> starts on{' '}
+          {new Date(trip.start_date).toLocaleDateString()}.
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
       {/* create form - pops open when you hit + New */}
       {showForm && (
