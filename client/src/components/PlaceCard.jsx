@@ -3,6 +3,7 @@
  * used on PlacesPage to show places in a nice grid layout
  */
 import { Link } from 'react-router-dom';
+import { formatHoursRange, capitalize } from '../utils/placeFormat';
 
 /*
  * maps each PlaceID to a relevant pexels image
@@ -36,7 +37,7 @@ export default function PlaceCard({ place }) {
 
   return (
     <Link to={`/places/${place.PlaceID}`} className="block">
-      <div className="rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white cursor-pointer group">
+      <div className="rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white cursor-pointer group">
         <div className="relative overflow-hidden">
           <img
             src={imageUrl}
@@ -44,19 +45,48 @@ export default function PlaceCard({ place }) {
             className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <span className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-medium ${typeBadge[type]}`}>
-            {type}
+            {capitalize(type)}
           </span>
         </div>
 
         <div className="p-4">
-          <h3 className="font-bold">{place.name}</h3>
-          <p className="text-gray-500 text-sm">{place.address}</p>
-          {place.avg_cost_per_person && (
-            <p className="text-sm text-gray-600 mt-2">~${place.avg_cost_per_person}/person</p>
-          )}
-          {place.hours && (
-            <p className="text-sm text-gray-600 mt-1">{place.hours}</p>
-          )}
+          <h3 className="font-bold mb-2">{place.name}</h3>
+          <div className="space-y-2">
+
+            {/* address row with map-pin icon so users instantly see it's a location */}
+            {place.address && (
+              <div className="flex items-start gap-2 text-sm text-gray-700">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5">
+                  <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>{place.address}</span>
+              </div>
+            )}
+
+            {/* hours row with clock icon and a bold "Hours" label, formatted via shared util */}
+            {place.hours && (
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span><span className="font-semibold text-gray-700">Hours · </span>{formatHoursRange(place.hours)}</span>
+              </div>
+            )}
+
+            {/* cost row with dollar-sign icon, rounded to a clean integer */}
+            {place.avg_cost_per_person != null && (
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+                <span>Avg. ${Number(place.avg_cost_per_person).toFixed(0)} / person</span>
+              </div>
+            )}
+
+          </div>
         </div>
       </div>
     </Link>

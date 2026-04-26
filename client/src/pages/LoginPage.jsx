@@ -14,7 +14,9 @@ export default function LoginPage() {
   const { loginUser, loginAdmin } = useAuth();
   const navigate = useNavigate();
 
-  /* handles login for both user and admin depending on the toggle */
+  /*
+   * handles login for both user and admin depending on the toggle
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -76,50 +78,55 @@ export default function LoginPage() {
       {/* right panel - login form */}
       <div className="flex items-center justify-center p-6 md:p-12 bg-seoul-bg min-h-[70vh] md:min-h-screen">
         <div className="w-full max-w-sm animate-slide-in">
-          <h2 className="text-2xl font-bold text-seoul-text mb-1">Welcome back</h2>
-          <p className="text-seoul-muted mb-6">Sign in to continue exploring</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h2>
+          <p className="text-gray-500 mb-6">Sign in to continue exploring</p>
 
           {/* toggle between user and admin login */}
-          <div className="flex rounded-lg bg-gray-200 p-1 mb-6">
+          <div className="flex gap-2 mb-6">
             <button
               onClick={() => setIsAdmin(false)}
-              className={`flex-1 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors ${
-                !isAdmin ? 'bg-white shadow text-seoul-text' : 'text-seoul-muted hover:text-seoul-text'
-              }`}
+              className={
+                !isAdmin
+                  ? 'rounded-full bg-[#1E3A5F] text-white px-4 py-2 text-sm font-semibold cursor-pointer transition-colors'
+                  : 'rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-2 text-sm font-semibold cursor-pointer transition-colors'
+              }
             >
               User
             </button>
             <button
               onClick={() => setIsAdmin(true)}
-              className={`flex-1 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors ${
-                isAdmin ? 'bg-white shadow text-seoul-text' : 'text-seoul-muted hover:text-seoul-text'
-              }`}
+              className={
+                isAdmin
+                  ? 'rounded-full bg-[#1E3A5F] text-white px-4 py-2 text-sm font-semibold cursor-pointer transition-colors'
+                  : 'rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-2 text-sm font-semibold cursor-pointer transition-colors'
+              }
             >
               Admin
             </button>
           </div>
 
           <form onSubmit={handleSubmit}>
+            <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Email</label>
             <input
               type="email"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 bg-white focus:ring-2 focus:ring-seoul-primary-light focus:border-seoul-primary-light transition-colors outline-none"
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-4"
               required
             />
-            {error && <p className="text-seoul-secondary text-sm mb-4">{error}</p>}
+            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
             <button
               type="submit"
-              className="w-full bg-seoul-secondary text-white py-3 rounded-lg font-medium cursor-pointer hover:bg-red-700 transition-all hover:shadow-lg"
+              className="rounded-full bg-[#1E3A5F] text-white hover:bg-[#2d5a8e] w-full py-3 text-sm font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Log In
             </button>
           </form>
 
           {!isAdmin && (
-            <p className="text-center mt-4 text-sm text-seoul-muted">
-              New here? <Link to="/register" className="text-seoul-primary-light hover:underline cursor-pointer">Create account</Link>
+            <p className="text-center mt-4 text-sm text-gray-500">
+              New here? <Link to="/register" className="text-[#3B82F6] hover:underline cursor-pointer">Create account</Link>
             </p>
           )}
         </div>

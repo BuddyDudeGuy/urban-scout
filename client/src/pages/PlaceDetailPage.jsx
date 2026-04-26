@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api';
 import MapView from '../components/MapView';
+import { formatHoursRange, capitalize } from '../utils/placeFormat';
 
 /*
  * maps each PlaceID to a relevant pexels image
@@ -61,7 +62,7 @@ export default function PlaceDetailPage() {
         placeId: place.PlaceID,
         notes: `Visit ${place.name}`,
       });
-      setMessage('Added to itinerary!');
+      setMessage('Added to your trip — open it in Trips to schedule a date and time.');
       setTimeout(() => setMessage(''), 2000);
     } catch (err) {
       setMessage('Failed to add');
@@ -96,7 +97,7 @@ export default function PlaceDetailPage() {
           &larr; Back to Places
         </Link>
         <span className={`absolute top-4 right-4 px-2 py-1 rounded text-xs font-medium ${typeBadge[type]}`}>
-          {type}
+          {capitalize(type)}
         </span>
         <h1 className="absolute bottom-4 left-4 right-4 text-white text-2xl font-bold drop-shadow-lg">
           {place.name}
@@ -106,16 +107,71 @@ export default function PlaceDetailPage() {
       {/* main content area below the hero */}
       <div className="max-w-3xl mx-auto px-4 pb-24 pt-6 space-y-4">
 
-        {/* info card with address, hours, cost, station code */}
+        {/* info card with address, hours, cost, station code - structured icon-row layout */}
         <div className="rounded-xl bg-white shadow-sm p-5">
-          <p className="text-gray-600">{place.address}</p>
-          {place.hours && <p className="text-sm text-gray-500 mt-1">Hours: {place.hours}</p>}
-          {place.avg_cost_per_person && (
-            <p className="text-sm text-gray-500 mt-1">Avg cost: ${place.avg_cost_per_person}/person</p>
-          )}
-          {place.station_code && (
-            <p className="text-sm text-gray-500 mt-1">Station code: {place.station_code}</p>
-          )}
+          <div className="space-y-4">
+
+            {/* address - the headline fact, gets prominent typography */}
+            {place.address && (
+              <div>
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">Address</p>
+                <div className="flex items-start gap-2 text-base font-medium text-gray-900">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-1 text-[#1E3A5F]">
+                    <path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <span>{place.address}</span>
+                </div>
+              </div>
+            )}
+
+            {/* hours - reformat to 12-hour for display only */}
+            {place.hours && (
+              <div>
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">Hours</p>
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#1E3A5F]">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  <span>{formatHoursRange(place.hours)}</span>
+                </div>
+              </div>
+            )}
+
+            {/* avg cost - dollar icon and clean rounded amount */}
+            {place.avg_cost_per_person != null && (
+              <div>
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">Avg Cost / Person</p>
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#1E3A5F]">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                  <span>${Number(place.avg_cost_per_person).toFixed(0)}</span>
+                </div>
+              </div>
+            )}
+
+            {/* station code - only renders for transit places */}
+            {place.station_code && (
+              <div>
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">Station Code</p>
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#1E3A5F]">
+                    <rect x="4" y="3" width="16" height="14" rx="3" />
+                    <line x1="4" y1="11" x2="20" y2="11" />
+                    <line x1="8" y1="17" x2="6" y2="21" />
+                    <line x1="16" y1="17" x2="18" y2="21" />
+                    <circle cx="9" cy="14" r="0.5" fill="currentColor" />
+                    <circle cx="15" cy="14" r="0.5" fill="currentColor" />
+                  </svg>
+                  <span>{place.station_code}</span>
+                </div>
+              </div>
+            )}
+
+          </div>
         </div>
 
         {/* map showing the place location, or fallback if no coords */}
@@ -132,7 +188,7 @@ export default function PlaceDetailPage() {
         {/* nearby transit stations */}
         {place.nearbyStations?.length > 0 && (
           <div className="rounded-xl bg-white shadow-sm p-5">
-            <h2 className="font-bold mb-2">Nearby Transit Stations</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-3">Nearby Transit Stations</h2>
             {place.nearbyStations.map((s, i) => (
               <div key={i} className="flex justify-between py-1 text-sm">
                 <span>{s.station_name} ({s.station_code})</span>
@@ -144,13 +200,13 @@ export default function PlaceDetailPage() {
 
         {/* add to itinerary section - uses dropdown, no typing needed */}
         <div className="rounded-xl bg-white shadow-sm p-5">
-          <h2 className="font-bold mb-1">Add to Itinerary</h2>
-          <p className="text-gray-400 text-xs mb-3">Select an itinerary and tap Add to include this place in your trip plan</p>
+          <h2 className="text-lg font-bold text-gray-900 mb-3">Add to Itinerary</h2>
+          <p className="text-xs text-gray-500 mb-3">Select an itinerary and tap Add to include this place in your trip plan</p>
 
           {itineraries.length === 0 ? (
             <p className="text-gray-400 text-sm">
               No itineraries yet &mdash;{' '}
-              <Link to="/itineraries" className="text-blue-500 hover:underline cursor-pointer">create one</Link>{' '}
+              <Link to="/itineraries" className="text-[#3B82F6] hover:underline cursor-pointer">create one</Link>{' '}
               in the Trips tab
             </p>
           ) : (
@@ -158,7 +214,7 @@ export default function PlaceDetailPage() {
               <select
                 value={selectedItinerary}
                 onChange={(e) => setSelectedItinerary(e.target.value)}
-                className="flex-1 p-2 border rounded-lg bg-white cursor-pointer"
+                className="flex-1 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors"
               >
                 <option value="">Select itinerary...</option>
                 {itineraries.map(it => (
@@ -167,7 +223,7 @@ export default function PlaceDetailPage() {
               </select>
               <button
                 onClick={handleAddToItinerary}
-                className="bg-blue-500 text-white px-5 py-2 rounded-full cursor-pointer hover:bg-blue-600 transition-colors text-sm font-medium"
+                className="rounded-full bg-[#1E3A5F] text-white hover:bg-[#2d5a8e] px-5 py-2.5 text-sm font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Add
               </button>

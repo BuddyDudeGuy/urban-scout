@@ -1,5 +1,10 @@
+/*
+ * manage places page - lets admins add a new landmark, eatery, or transit station
+ * type-specific fields appear based on the selected place type
+ */
 import { useEffect, useState } from 'react';
 import api from '../../api';
+import PageHeader from '../../components/PageHeader';
 
 export default function ManagePlaces() {
   const [regions, setRegions] = useState([]);
@@ -24,6 +29,9 @@ export default function ManagePlaces() {
     fetchRegions();
   }, []);
 
+  /*
+   * load the list of regions for the region dropdown
+   */
   async function fetchRegions() {
     try {
       setLoadingRegions(true);
@@ -37,6 +45,9 @@ export default function ManagePlaces() {
     }
   }
 
+  /*
+   * generic field change handler - resets type-specific fields when type flips
+   */
   function handleChange(e) {
     const { name, value } = e.target;
 
@@ -54,6 +65,9 @@ export default function ManagePlaces() {
     });
   }
 
+  /*
+   * client-side validation before we hit the server
+   */
   function validateForm() {
     if (!form.name.trim()) return 'Place name is required.';
     if (!form.address.trim()) return 'Address is required.';
@@ -78,6 +92,9 @@ export default function ManagePlaces() {
     return '';
   }
 
+  /*
+   * submit the new place to the server, then reset the form on success
+   */
   async function handleSubmit(e) {
     e.preventDefault();
     setMessage('');
@@ -127,200 +144,196 @@ export default function ManagePlaces() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 pb-24">
-      <div className="mx-auto max-w-2xl">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">Manage Places</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Add a new landmark, eatery, or transit station to the system.
-          </p>
-        </div>
+    <div className="max-w-3xl mx-auto px-4 pb-24 pt-8">
+      <PageHeader
+        title="Manage Places"
+        subtitle="Add a new landmark, eatery, or transit station to the system."
+      />
 
-        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-          {message && (
-            <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-              {message}
-            </div>
-          )}
+      <div className="rounded-xl bg-white shadow-sm p-5 mb-4">
+        {message && (
+          <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {message}
+          </div>
+        )}
 
-          {error && (
-            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {error}
-            </div>
-          )}
+        {error && (
+          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Place Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="e.g. Bukchon Hanok Village"
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">
+              Place Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="e.g. Bukchon Hanok Village"
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors"
+            />
+          </div>
 
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Address
-              </label>
-              <input
-                type="text"
-                name="address"
-                value={form.address}
-                onChange={handleChange}
-                placeholder="Street address"
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">
+              Address
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={form.address}
+              onChange={handleChange}
+              placeholder="Street address"
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors"
+            />
+          </div>
 
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Coordinates
-              </label>
-              <input
-                type="text"
-                name="coordinates"
-                value={form.coordinates}
-                onChange={handleChange}
-                placeholder="e.g. 37.5826,126.9830"
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">
+              Coordinates
+            </label>
+            <input
+              type="text"
+              name="coordinates"
+              value={form.coordinates}
+              onChange={handleChange}
+              placeholder="e.g. 37.5826,126.9830"
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors"
+            />
+          </div>
 
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Region
-              </label>
-              <select
-                name="RegionID"
-                value={form.RegionID}
-                onChange={handleChange}
-                disabled={loadingRegions}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500 disabled:bg-slate-100"
-              >
-                <option value="">
-                  {loadingRegions ? 'Loading regions...' : 'Select a region'}
-                </option>
-                {Array.isArray(regions) && regions.map((region) => (
-                  <option key={region.RegionID} value={region.RegionID}>
-                    {region.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                Place Type
-              </label>
-              <select
-                name="type"
-                value={form.type}
-                onChange={handleChange}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
-              >
-                <option value="landmark">Landmark</option>
-                <option value="eatery">Eatery</option>
-                <option value="transit_station">Transit Station</option>
-              </select>
-            </div>
-
-            {form.type === 'landmark' && (
-              <div className="space-y-4 rounded-2xl bg-slate-50 p-4">
-                <h2 className="text-sm font-semibold text-slate-800">
-                  Landmark Details
-                </h2>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700">
-                    Landmark Type
-                  </label>
-                  <input
-                    type="text"
-                    name="landmark_type"
-                    value={form.landmark_type}
-                    onChange={handleChange}
-                    placeholder="e.g. Palace, Museum, Observation"
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700">
-                    Hours
-                  </label>
-                  <input
-                    type="text"
-                    name="hours"
-                    value={form.hours}
-                    onChange={handleChange}
-                    placeholder="e.g. 09:00-18:00"
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
-                  />
-                </div>
-              </div>
-            )}
-
-            {form.type === 'eatery' && (
-              <div className="space-y-4 rounded-2xl bg-slate-50 p-4">
-                <h2 className="text-sm font-semibold text-slate-800">
-                  Eatery Details
-                </h2>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700">
-                    Average Cost Per Person
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    name="avg_cost_per_person"
-                    value={form.avg_cost_per_person}
-                    onChange={handleChange}
-                    placeholder="e.g. 18.50"
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
-                  />
-                </div>
-              </div>
-            )}
-
-            {form.type === 'transit_station' && (
-              <div className="space-y-4 rounded-2xl bg-slate-50 p-4">
-                <h2 className="text-sm font-semibold text-slate-800">
-                  Transit Station Details
-                </h2>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700">
-                    Station Code
-                  </label>
-                  <input
-                    type="text"
-                    name="station_code"
-                    value={form.station_code}
-                    onChange={handleChange}
-                    placeholder="e.g. BKV"
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 uppercase outline-none transition focus:border-slate-500"
-                  />
-                </div>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+          <div>
+            <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">
+              Region
+            </label>
+            <select
+              name="RegionID"
+              value={form.RegionID}
+              onChange={handleChange}
+              disabled={loadingRegions}
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors disabled:opacity-50"
             >
-              {submitting ? 'Adding Place...' : 'Add Place'}
-            </button>
-          </form>
-        </div>
+              <option value="">
+                {loadingRegions ? 'Loading regions...' : 'Select a region'}
+              </option>
+              {Array.isArray(regions) && regions.map((region) => (
+                <option key={region.RegionID} value={region.RegionID}>
+                  {region.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">
+              Place Type
+            </label>
+            <select
+              name="type"
+              value={form.type}
+              onChange={handleChange}
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors"
+            >
+              <option value="landmark">Landmark</option>
+              <option value="eatery">Eatery</option>
+              <option value="transit_station">Transit Station</option>
+            </select>
+          </div>
+
+          {form.type === 'landmark' && (
+            <div className="space-y-4 rounded-xl bg-white shadow-sm p-4">
+              <h2 className="text-lg font-bold text-gray-900 mb-3">
+                Landmark Details
+              </h2>
+
+              <div>
+                <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">
+                  Landmark Type
+                </label>
+                <input
+                  type="text"
+                  name="landmark_type"
+                  value={form.landmark_type}
+                  onChange={handleChange}
+                  placeholder="e.g. Palace, Museum, Observation"
+                  className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">
+                  Hours
+                </label>
+                <input
+                  type="text"
+                  name="hours"
+                  value={form.hours}
+                  onChange={handleChange}
+                  placeholder="e.g. 09:00-18:00"
+                  className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors"
+                />
+              </div>
+            </div>
+          )}
+
+          {form.type === 'eatery' && (
+            <div className="space-y-4 rounded-xl bg-white shadow-sm p-4">
+              <h2 className="text-lg font-bold text-gray-900 mb-3">
+                Eatery Details
+              </h2>
+
+              <div>
+                <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">
+                  Average Cost Per Person
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  name="avg_cost_per_person"
+                  value={form.avg_cost_per_person}
+                  onChange={handleChange}
+                  placeholder="e.g. 18.50"
+                  className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors"
+                />
+              </div>
+            </div>
+          )}
+
+          {form.type === 'transit_station' && (
+            <div className="space-y-4 rounded-xl bg-white shadow-sm p-4">
+              <h2 className="text-lg font-bold text-gray-900 mb-3">
+                Transit Station Details
+              </h2>
+
+              <div>
+                <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">
+                  Station Code
+                </label>
+                <input
+                  type="text"
+                  name="station_code"
+                  value={form.station_code}
+                  onChange={handleChange}
+                  placeholder="e.g. BKV"
+                  className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white uppercase transition-colors"
+                />
+              </div>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full rounded-full bg-[#1E3A5F] text-white hover:bg-[#2d5a8e] px-5 py-3 text-sm font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {submitting ? 'Adding Place...' : 'Add Place'}
+          </button>
+        </form>
       </div>
     </div>
   );

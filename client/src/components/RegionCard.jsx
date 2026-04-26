@@ -42,7 +42,7 @@ export default function RegionCard({ region, isSubscribed, onToggle }) {
           disabled={loading}
           className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer transition-colors ${
             isSubscribed
-              ? 'bg-blue-100 text-blue-600 hover:bg-blue-200'
+              ? 'bg-[#3B82F6]/10 text-[#3B82F6] hover:bg-[#3B82F6]/20'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
         >

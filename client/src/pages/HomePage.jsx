@@ -96,7 +96,7 @@ export default function HomePage() {
 
       {/* region cards grid section */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-10">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Popular Regions</h2>
+        <h2 className="text-lg font-bold text-gray-900 mb-3">Popular Regions</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {regions.map((region, idx) => {

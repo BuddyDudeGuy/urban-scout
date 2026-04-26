@@ -20,6 +20,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import VerifyReports from './pages/admin/VerifyReports';
 import ManageNews from './pages/admin/ManageNews';
 import ManagePlaces from './pages/admin/ManagePlaces';
+import ManageRoutes from './pages/admin/ManageRoutes';
 
 export default function App() {
   const { loading } = useAuth();
@@ -50,6 +51,7 @@ export default function App() {
         <Route path="/admin/reports" element={<ProtectedRoute role="admin"><VerifyReports /></ProtectedRoute>} />
         <Route path="/admin/news" element={<ProtectedRoute role="admin"><ManageNews /></ProtectedRoute>} />
         <Route path="/admin/places" element={<ProtectedRoute role="admin"><ManagePlaces /></ProtectedRoute>} />
+        <Route path="/admin/routes" element={<ProtectedRoute role="admin"><ManageRoutes /></ProtectedRoute>} />
 
         {/* catch-all redirect */}
         <Route path="*" element={<Navigate to="/login" />} />

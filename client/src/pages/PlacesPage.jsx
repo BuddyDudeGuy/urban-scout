@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../api';
 import PlaceCard from '../components/PlaceCard';
+import PageHeader from '../components/PageHeader';
 
 export default function PlacesPage() {
   const [searchParams] = useSearchParams();
@@ -46,13 +47,15 @@ export default function PlacesPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-8 pb-24 pt-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-1">Places</h1>
-      <p className="text-gray-500 mb-6">Discover landmarks, restaurants, and transit stations in your regions</p>
+      <PageHeader
+        title="Places"
+        subtitle="Discover landmarks, restaurants, and transit stations in your regions"
+      />
 
       <select
         value={regionId}
         onChange={(e) => setRegionId(e.target.value)}
-        className="w-full p-2 border rounded-lg mb-3 bg-white cursor-pointer"
+        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-3"
       >
         <option value="">Filter by Region</option>
         {regions.map(r => (
@@ -65,11 +68,11 @@ export default function PlacesPage() {
           <button
             key={f.value}
             onClick={() => setType(f.value)}
-            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap cursor-pointer hover:opacity-80 transition-all ${
+            className={
               type === f.value
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-100 text-gray-600'
-            }`}
+                ? 'rounded-full bg-[#1E3A5F] text-white px-4 py-2 text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap'
+                : 'rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-2 text-sm font-semibold cursor-pointer transition-colors whitespace-nowrap'
+            }
           >
             {f.label}
           </button>

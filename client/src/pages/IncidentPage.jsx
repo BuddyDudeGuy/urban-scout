@@ -7,6 +7,8 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
+import PageHeader from '../components/PageHeader';
+import { capitalize } from '../utils/placeFormat';
 
 export default function IncidentPage() {
   const { user } = useAuth();
@@ -84,153 +86,171 @@ export default function IncidentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="max-w-6xl mx-auto px-4 md:px-8 pb-24 pt-8">
 
-      {/* page header */}
-      <div className="max-w-6xl mx-auto px-4 pt-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Report an Incident</h1>
-        <p className="text-gray-500">
-          Report safety issues, hazards, or incidents. Admins will review and verify your report.
-        </p>
-      </div>
+      <PageHeader
+        title="Report an Incident"
+        subtitle="Report safety issues, hazards, or incidents. Admins will review and verify your report."
+      />
 
-      {/* two column grid - reports on the left, form on the right */}
-      {/* on mobile the form jumps to the top because that's the primary tap target */}
-      <div className="max-w-6xl mx-auto px-4 pb-24 pt-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* two-column on desktop: reports list on the left, form on the right
+          on mobile they stack with the form first (primary tap target) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-          {/* left column - user's past reports */}
-          <section className="order-2 lg:order-1">
-            <h2 className="text-lg font-bold text-gray-900 mb-3">My Reports</h2>
+      {/* form column - on desktop sits on the right, on mobile shows first */}
+      <section className="lg:col-start-2 lg:row-start-1">
+        <h2 className="text-lg font-bold text-gray-900 mb-3">New Report</h2>
+        <form onSubmit={handleSubmit} className="rounded-xl bg-white shadow-sm p-5 mb-4">
 
-            {myReports.length === 0 && (
-              <div className="rounded-xl bg-white shadow-sm p-6 text-center text-gray-400">
-                <p className="text-sm">No reports submitted yet</p>
-                <p className="text-xs mt-1">Anything you submit on the right will show up here</p>
-              </div>
-            )}
+          {/* region dropdown */}
+          <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Region</label>
+          <select
+            value={regionId}
+            onChange={(e) => setRegionId(e.target.value)}
+            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-4"
+            required
+          >
+            <option value="">Select region...</option>
+            {regions.map(r => (
+              <option key={r.RegionID} value={r.RegionID}>{r.name}</option>
+            ))}
+          </select>
 
-            {/* scrollable list so the left column stays put even with lots of reports */}
-            <div className="space-y-3 lg:max-h-[70vh] lg:overflow-y-auto lg:pr-1">
-              {myReports.map(report => (
-                <div key={report.Report_ID} className="rounded-xl bg-white shadow-sm p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <span className="font-semibold text-gray-900 text-sm">
-                        {report.category?.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                      </span>
-                      <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
-                        report.severity === 'high' ? 'bg-red-100 text-red-700' :
-                        report.severity === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-green-100 text-green-700'
-                      }`}>
-                        {report.severity}
-                      </span>
-                    </div>
-                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                      statusStyle[report.verification_status] || 'bg-gray-100 text-gray-600'
-                    }`}>
-                      {report.verification_status || 'Pending Review'}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-2">{report.description}</p>
-                  <div className="flex justify-between text-xs text-gray-400">
-                    <span>{report.region_name}</span>
-                    <span>{new Date(report.timestamp).toLocaleDateString()}</span>
-                  </div>
-                  {report.verifier_name && (
-                    <p className="text-xs text-gray-400 mt-1">Reviewed by: {report.verifier_name}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
+          {/* category dropdown with formatted labels */}
+          <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Category</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-4"
+            required
+          >
+            <option value="">Select category...</option>
+            {categories.map(c => (
+              <option key={c} value={c}>
+                {c.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+              </option>
+            ))}
+          </select>
 
-          {/* right column - the submit form */}
-          <section className="order-1 lg:order-2">
-            <h2 className="text-lg font-bold text-gray-900 mb-3">New Report</h2>
-            <form onSubmit={handleSubmit} className="rounded-xl bg-white shadow-sm p-6">
-
-              {/* region dropdown */}
-              <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
-              <select
-                value={regionId}
-                onChange={(e) => setRegionId(e.target.value)}
-                className="w-full p-2.5 border border-gray-300 rounded-lg mb-4 bg-white cursor-pointer text-gray-700"
-                required
-              >
-                <option value="">Select region...</option>
-                {regions.map(r => (
-                  <option key={r.RegionID} value={r.RegionID}>{r.name}</option>
-                ))}
-              </select>
-
-              {/* category dropdown with formatted labels */}
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-2.5 border border-gray-300 rounded-lg mb-4 bg-white cursor-pointer text-gray-700"
-                required
-              >
-                <option value="">Select category...</option>
-                {categories.map(c => (
-                  <option key={c} value={c}>
-                    {c.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                  </option>
-                ))}
-              </select>
-
-              {/* severity pill buttons */}
-              <label className="block text-sm font-medium text-gray-700 mb-2">Severity</label>
-              <div className="flex gap-3 mb-4">
-                {severities.map(s => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setSeverity(s)}
-                    className={`flex-1 py-2 rounded-full text-sm font-medium cursor-pointer transition-colors ${
-                      severity === s
-                        ? severityActiveColor[s]
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    {s.charAt(0).toUpperCase() + s.slice(1)}
-                  </button>
-                ))}
-              </div>
-
-              {/* description - the only field that actually needs typing */}
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-2.5 border border-gray-300 rounded-lg mb-5 text-gray-700"
-                rows={3}
-                placeholder="What happened?"
-                required
-              />
-
-              {/* submit button */}
+          {/* severity pill buttons - active state keeps semantic red/yellow/green to communicate level */}
+          <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Severity</label>
+          <div className="flex gap-3 mb-4">
+            {severities.map(s => (
               <button
-                type="submit"
-                className="rounded-full bg-[#1E3A5F] hover:bg-[#2d5a8e] text-white cursor-pointer w-full py-3 font-medium transition-colors"
+                key={s}
+                type="button"
+                onClick={() => setSeverity(s)}
+                className={
+                  severity === s
+                    ? `flex-1 rounded-full ${severityActiveColor[s]} px-4 py-2 text-sm font-semibold cursor-pointer transition-colors`
+                    : 'flex-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-2 text-sm font-semibold cursor-pointer transition-colors'
+                }
               >
-                Submit Report
+                {s.charAt(0).toUpperCase() + s.slice(1)}
               </button>
+            ))}
+          </div>
 
-              {/* inline banner for success or failure - auto-clears after a few seconds on success */}
-              {message && (
-                <p className={`text-sm mt-3 text-center ${
-                  message.includes('success') ? 'text-green-600' : 'text-red-500'
+          {/* description - the only field that actually needs typing */}
+          <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-5"
+            rows={3}
+            placeholder="What happened?"
+            required
+          />
+
+          {/* submit button */}
+          <button
+            type="submit"
+            className="rounded-full bg-[#1E3A5F] text-white hover:bg-[#2d5a8e] px-5 text-sm font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full py-3"
+          >
+            Submit Report
+          </button>
+
+          {/* inline banner for success or failure - auto-clears after a few seconds on success */}
+          {message && (
+            <p className={`text-sm mt-3 text-center ${
+              message.includes('success') ? 'text-green-600' : 'text-red-500'
+            }`}>
+              {message}
+            </p>
+          )}
+        </form>
+      </section>
+
+      {/* reports column - on desktop sits on the left, on mobile shows below the form */}
+      <section className="lg:col-start-1 lg:row-start-1">
+        <h2 className="text-lg font-bold text-gray-900 mb-3">My Reports</h2>
+
+        {myReports.length === 0 && (
+          <p className="text-gray-400 text-center py-8">No reports submitted yet. Anything you submit above will show up here.</p>
+        )}
+
+        {myReports.map(report => (
+          <div key={report.Report_ID} className="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow p-5 mb-4">
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-gray-900">
+                  {report.category?.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                </span>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  report.severity === 'high' ? 'bg-red-100 text-red-700' :
+                  report.severity === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                  'bg-green-100 text-green-700'
                 }`}>
-                  {message}
-                </p>
-              )}
-            </form>
-          </section>
+                  {capitalize(report.severity)}
+                </span>
+              </div>
+              <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                statusStyle[report.verification_status] || 'bg-gray-100 text-gray-600'
+              }`}>
+                {capitalize(report.verification_status) || 'Pending Review'}
+              </span>
+            </div>
 
-        </div>
+            <div className="space-y-2 mb-3">
+              {/* description */}
+              <div className="flex items-start gap-2 text-sm text-gray-700">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5 text-[#1E3A5F]">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                <span>{report.description}</span>
+              </div>
+
+              {/* location */}
+              <div className="flex items-start gap-2 text-sm text-gray-600">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5 text-[#1E3A5F]">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>{report.region_name}</span>
+              </div>
+
+              {/* date */}
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#1E3A5F]">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>{new Date(report.timestamp).toLocaleDateString()}</span>
+              </div>
+            </div>
+
+            {report.verifier_name && (
+              <p className="text-xs text-gray-500">Reviewed by: {report.verifier_name}</p>
+            )}
+          </div>
+        ))}
+      </section>
+
       </div>
     </div>
   );

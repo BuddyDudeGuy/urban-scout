@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../api';
 import { useAuth } from '../../context/AuthContext';
+import PageHeader from '../../components/PageHeader';
 
 export default function AdminDashboard() {
   const { admin, logout } = useAuth();
@@ -37,48 +38,53 @@ export default function AdminDashboard() {
   ).length;
 
   return (
-    <div className="pb-20 p-4 max-w-lg mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-xl font-bold">Admin Dashboard</h1>
-          <p className="text-sm text-gray-500">
-            {admin?.name} — {stats.region?.name || 'Loading...'}
-          </p>
-        </div>
-        <button onClick={logout} className="text-sm text-red-500 font-medium cursor-pointer hover:text-red-700 transition-colors">
-          Logout
-        </button>
-      </div>
+    <div className="max-w-3xl mx-auto px-4 pb-24 pt-8">
+      <PageHeader
+        title="Admin Dashboard"
+        subtitle={`${admin?.name || ''} — ${stats.region?.name || 'Loading...'}`}
+        action={
+          <button
+            onClick={logout}
+            className="rounded-full bg-red-500 text-white hover:bg-red-600 px-5 py-2.5 text-sm font-semibold cursor-pointer transition-colors"
+          >
+            Logout
+          </button>
+        }
+      />
 
-      {/* stat cards - pending reports and news posts are clickable links */}
+      {/* stat cards - pending reports, news posts, places, and routes are clickable links */}
       <div className="grid grid-cols-2 gap-3 mb-6">
-        <Link to="/admin/reports" className="bg-white rounded-lg shadow p-4 text-center cursor-pointer hover:shadow-lg transition-all">
+        <Link to="/admin/reports" className="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow p-5 text-center cursor-pointer">
           <p className="text-2xl font-bold text-orange-500">{pendingCount}</p>
           <p className="text-xs text-gray-500">Pending Reports</p>
         </Link>
-        <Link to="/admin/news" className="bg-white rounded-lg shadow p-4 text-center cursor-pointer hover:shadow-lg transition-all">
-          <p className="text-2xl font-bold text-blue-500">{stats.news.length}</p>
+        <Link to="/admin/news" className="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow p-5 text-center cursor-pointer">
+          <p className="text-2xl font-bold text-[#1E3A5F]">{stats.news.length}</p>
           <p className="text-xs text-gray-500">News Posts</p>
         </Link>
-        <Link to="/admin/places" className="bg-white rounded-lg shadow p-4 text-center cursor-pointer hover:shadow-lg transition-all">
+        <Link to="/admin/places" className="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow p-5 text-center cursor-pointer">
           <p className="text-2xl font-bold text-green-500">{stats.region?.placeCount || 0}</p>
           <p className="text-xs text-gray-500">Places</p>
         </Link>
-        <div className="bg-white rounded-lg shadow p-4 text-center cursor-pointer hover:shadow-lg transition-all">
-          <p className="text-2xl font-bold text-purple-500">{stats.incidents.length}</p>
+        <Link to="/admin/routes" className="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow p-5 text-center cursor-pointer">
+          <p className="text-2xl font-bold text-[#1E3A5F]">Routes</p>
+          <p className="text-xs text-gray-500">Manage Transit</p>
+        </Link>
+        <div className="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow p-5 text-center cursor-pointer col-span-2">
+          <p className="text-2xl font-bold text-[#1E3A5F]">{stats.incidents.length}</p>
           <p className="text-xs text-gray-500">Total Reports</p>
         </div>
       </div>
 
       {/* recent pending reports preview */}
-      <h2 className="font-bold mb-2">Recent Pending Reports</h2>
+      <h2 className="text-lg font-bold text-gray-900 mb-3">Recent Pending Reports</h2>
       {stats.incidents
         .filter(i => !i.verification_status || i.verification_status === 'pending')
         .slice(0, 3)
         .map(incident => (
-          <div key={incident.Report_ID} className="bg-white rounded-lg shadow p-3 mb-2 hover:shadow-md transition-shadow">
+          <div key={incident.Report_ID} className="rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow p-5 mb-4">
             <div className="flex justify-between">
-              <span className="font-medium text-sm">{incident.category}</span>
+              <span className="font-medium text-sm text-gray-900">{incident.category}</span>
               <span className={`text-xs px-2 py-1 rounded ${
                 incident.severity === 'high' ? 'bg-red-100 text-red-700' :
                 incident.severity === 'medium' ? 'bg-yellow-100 text-yellow-700' :
@@ -92,7 +98,7 @@ export default function AdminDashboard() {
         ))
       }
       {pendingCount === 0 && (
-        <p className="text-gray-400 text-sm">No pending reports</p>
+        <p className="text-gray-400 text-center py-8">No pending reports</p>
       )}
     </div>
   );

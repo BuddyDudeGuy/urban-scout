@@ -15,7 +15,9 @@ export default function RegisterPage() {
   const { registerUser } = useAuth();
   const navigate = useNavigate();
 
-  /* sends the registration request and navigates home on success */
+  /*
+   * sends the registration request and navigates home on success
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -37,43 +39,46 @@ export default function RegisterPage() {
 
       <div className="flex items-center justify-center p-6 min-h-[70vh]">
         <div className="w-full max-w-sm animate-slide-in">
-          <h2 className="text-xl font-bold text-seoul-text mb-1">Create Account</h2>
-          <p className="text-seoul-muted text-sm mb-6">You'll be able to choose regions to follow after signing up</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">Create Account</h2>
+          <p className="text-gray-500 text-sm mb-6">You'll be able to choose regions to follow after signing up</p>
 
           <form onSubmit={handleSubmit}>
+            <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Full Name</label>
             <input
               type="text"
               placeholder="Full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg mb-3 bg-white focus:ring-2 focus:ring-seoul-primary-light focus:border-seoul-primary-light transition-colors outline-none"
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-3"
               required
             />
+            <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Email</label>
             <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg mb-3 bg-white focus:ring-2 focus:ring-seoul-primary-light focus:border-seoul-primary-light transition-colors outline-none"
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-3"
               required
             />
+            <label className="block text-sm font-semibold text-[#1E3A5F] mb-1.5">Home City</label>
             <input
               type="text"
               placeholder="Home city (optional)"
               value={homeCity}
               onChange={(e) => setHomeCity(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 bg-white focus:ring-2 focus:ring-seoul-primary-light focus:border-seoul-primary-light transition-colors outline-none"
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3B82F6] outline-none bg-white transition-colors mb-4"
             />
-            {error && <p className="text-seoul-secondary text-sm mb-4">{error}</p>}
+            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
             <button
               type="submit"
-              className="w-full bg-seoul-secondary text-white py-3 rounded-lg font-medium cursor-pointer hover:bg-red-700 transition-all hover:shadow-lg"
+              className="rounded-full bg-[#1E3A5F] text-white hover:bg-[#2d5a8e] w-full py-3 text-sm font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Sign Up
             </button>
           </form>
-          <p className="text-center mt-4 text-sm text-seoul-muted">
-            Already have an account? <Link to="/login" className="text-seoul-primary-light hover:underline cursor-pointer">Log in</Link>
+          <p className="text-center mt-4 text-sm text-gray-500">
+            Already have an account? <Link to="/login" className="text-[#3B82F6] hover:underline cursor-pointer">Log in</Link>
           </p>
         </div>
       </div>
