@@ -1,5 +1,29 @@
+# Dependencies
 node_modules/
+
+# Environment
 .env
-*.log
+.env.local
+
+# Build output
 dist/
+
+# Logs
+*.log
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation (kept locally, not in repo)
+docs/
+
+# Internal dev files
+CLAUDE.md
+PLAN.md
