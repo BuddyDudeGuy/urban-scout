@@ -1,8 +1,8 @@
 # Urban Scout
 
-Tourist web app for Seoul — find places, check transit, read news, report incidents, and plan trips. All in one spot.
+Tourist web app for Seoul - find places, check transit, read news, report incidents, and plan trips. All in one spot.
 
-CPSC 471 — University of Calgary — Winter 2026 — Group 61
+CPSC 471 - University of Calgary - Winter 2026 - Group 61
 
 ---
 
@@ -96,7 +96,7 @@ App runs at **http://localhost:5173**
 
 ## Sample Accounts
 
-No passwords — just enter the email on the login page.
+No passwords - just enter the email on the login page.
 
 | Role | Email |
 |:-----|:------|
