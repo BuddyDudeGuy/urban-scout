@@ -1,0 +1,511 @@
+\documentclass[11pt,letterpaper]{article}
+
+% ---------- Page geometry ----------
+\usepackage[margin=1in]{geometry}
+
+% ---------- Graphics and floats ----------
+\usepackage{graphicx}
+\usepackage{float}
+
+% ---------- Tables ----------
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% ---------- Captions ----------
+\usepackage[font=small,labelfont=bf]{caption}
+
+% ---------- Lists ----------
+\usepackage{enumitem}
+\setlist{itemsep=2pt, topsep=4pt}
+
+% Paragraph spacing
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{1.5em}
+
+% ---------- Colors ----------
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0.0,0.5,0.0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0.0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.94}
+\definecolor{inlinecode}{HTML}{0B4F8E}
+
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{{\color{inlinecode}\oldtexttt{#1}}}
+
+% ---------- Listings ----------
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single
+}
+\lstset{style=mystyle}
+
+\lstdefinelanguage{Bash}{
+    morekeywords={
+        cd, ls, mkdir, rm, cp, mv, cat, echo, export, source, sudo,
+        npm, npx, node, git, docker, mysql, pdflatex, curl, wget, chmod
+    },
+    sensitive=true,
+    morecomment=[l]{\#},
+    morestring=[b]',
+    morestring=[b]"
+}
+
+% ---------- Section control ----------
+\usepackage{etoolbox}
+\usepackage{needspace}
+\preto\section{\clearpage}
+\preto\subsection{\needspace{12\baselineskip}}
+\preto\subsubsection{\needspace{10\baselineskip}}
+\newcommand{\boldheading}[1]{\needspace{6\baselineskip}\noindent\textbf{#1}}
+
+\widowpenalty=10000
+\clubpenalty=10000
+\raggedbottom
+
+% ---------- Hyperref ----------
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue]{hyperref}
+
+\setcounter{tocdepth}{2}
+
+\begin{document}
+
+% ---- Title page ----
+\begin{titlepage}
+    \centering
+
+    \vspace*{1.5cm}
+
+    {\large University of Calgary\par}
+    \vspace{0.3cm}
+    {\large Department of Computer Science\par}
+
+    \vspace{0.8cm}
+    {\Large CPSC 471 \textendash\ Database Management Systems\par}
+
+    \vspace{1.0cm}
+    \rule{\linewidth}{0.5mm}
+
+    \vspace{1.2cm}
+    {\Huge\bfseries Urban Scout\par}
+
+    \vspace{0.6cm}
+    {\LARGE Unified Mobile Tourist Assistant\par}
+
+    \vspace{0.8cm}
+    {\Large User Manual\par}
+
+    \vspace{1.2cm}
+    \rule{\linewidth}{0.5mm}
+
+    \vspace{1.5cm}
+    {\Large\bfseries Group 61\par}
+
+    \vspace{1.0cm}
+    \begin{tabular}{c}
+        \Large Sean Kim \\[0.4em]
+        \Large Muhtasim Ishmam \\[0.4em]
+        \Large Talha Hussain Mahr \\
+    \end{tabular}
+
+    \vfill
+
+    {\large Winter 2026\par}
+
+    \vspace{0.5cm}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ===========================================================================
+\section{Introduction}
+
+This manual describes how to install, run, and use Urban Scout. It is intended for someone other than the developers, such as a teaching assistant, evaluator, or new user, to be able to smoothly set up and interact with the application. Every feature available in the web interface is documented here.
+
+Urban Scout is a unified mobile tourist assistant for Seoul. It combines place browsing, transit schedules, regional news and safety alerts, incident reporting, and itinerary planning into a single relational web application. The system supports two roles: regular users (tourists) and administrators (content managers).
+
+% ===========================================================================
+\section{Installation and Setup}
+
+To run the project locally, the following components must be available:
+\begin{itemize}
+    \item MySQL server (8.0 or later)
+    \item Node.js (v18 or later) and npm
+    \item a modern web browser
+\end{itemize}
+
+\boldheading{Step 1: Database setup.} Run the schema, seed, and stored procedure scripts against MySQL. The schema script creates the \texttt{UrbanScout} database and all of its tables, the seed script loads sample regions, places, users, admins, transit data, news, and itineraries, and the stored procedures script registers the 9 procedures used by the backend.
+
+\begin{lstlisting}[language=Bash]
+mysql -u root -p < database/schema.sql
+mysql -u root -p UrbanScout < database/seed.sql
+mysql -u root -p UrbanScout < database/stored-procedures.sql
+\end{lstlisting}
+
+\boldheading{Step 2: Backend setup.} Move into the server folder, copy the example environment file, fill in the MySQL credentials and a session secret, install dependencies, and start the Express server. The server listens on port 3001 by default.
+
+\begin{lstlisting}[language=Bash]
+cd server
+cp .env.example .env
+# edit .env with MySQL credentials and a session secret
+npm install
+npm start
+# server runs on port 3001
+\end{lstlisting}
+
+\boldheading{Step 3: Frontend setup.} In a second terminal, move into the client folder, install the front-end dependencies, and start the Vite development server. Vite proxies API calls to the backend automatically.
+
+\begin{lstlisting}[language=Bash]
+cd client
+npm install
+npm run dev
+# Vite dev server runs on port 5173
+\end{lstlisting}
+
+The backend and frontend must both be running for the application to work correctly. Once both servers are up, the app is reachable at \texttt{http://localhost:5173}.
+
+% ===========================================================================
+\section{Logging In}
+
+The login page supports access for both regular users and administrators.
+
+\boldheading{Regular User Login.} A regular user selects the user mode on the login page and enters one of the seeded user email addresses.
+
+\boldheading{Administrator Login.} An administrator selects the admin mode on the login page and enters one of the seeded admin email addresses.
+
+The seeded accounts loaded by \texttt{seed.sql} are listed in Table \ref{tab:accounts}. Any of these emails can be used directly without a password since the system uses a simplified email-based login flow.
+
+\begin{table}[H]
+    \centering
+    \caption{Seeded sample accounts for testing.}
+    \label{tab:accounts}
+    \begin{tabularx}{\textwidth}{l l X}
+        \toprule
+        \textbf{Role} & \textbf{Email} & \textbf{Notes} \\
+        \midrule
+        User  & alice@example.com    & Based in Calgary, subscribed to Downtown Seoul and Hongdae. \\
+        User  & bob@example.com      & Based in Vancouver, subscribed to Gangnam. \\
+        User  & charlie@example.com  & Based in Toronto, subscribed to all 3 regions. \\
+        Admin & soyeon@urbanscout.io & Senior admin assigned to Downtown Seoul. \\
+        Admin & minho@urbanscout.io  & Junior admin assigned to Gangnam. \\
+        Admin & jisoo@urbanscout.io  & Senior admin assigned to Hongdae. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+The project currently uses a simplified email-based login process for demonstration purposes. This allows the system to focus on role-based access and application workflow rather than full production authentication. A registration page is also available at \texttt{/register} for creating a new user account, though the seeded sample accounts above are used for testing purposes.
+
+% ===========================================================================
+\section{Using the Application as a Regular User}
+
+After logging in, regular users access the main pages through the bottom navigation bar. Each page below is reachable in one tap from the navbar except Place Detail, which opens after tapping a place card, and Itinerary Detail, which opens after tapping a trip card.
+
+\subsection{Home Page}
+
+After login, the home page shows a Seoul hero banner and three region cards. The user can subscribe or unsubscribe to each region, which controls what places, news, and alerts they see across the rest of the app.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        \texttt{Subscribe} button on a region card & Adds that region to your feed. \\
+        \texttt{Subscribed} button (filled blue) & Already following this region. Tap again to unsubscribe. \\
+        \texttt{Logout} button (top right) & Ends the session and returns to the login page. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Places}
+
+The Places page lists places across the user's subscribed regions. Filter pills choose between Landmarks, Eateries, Transit, or All. The region dropdown narrows the list to a single region.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        \texttt{Landmarks} / \texttt{Eateries} / \texttt{Transit} / \texttt{All} filter pills & Filter the cards by type. Only one filter is active at a time. \\
+        Region dropdown & Narrows the list to a single region. \\
+        Place card & Tap to open the place detail page. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Place Detail}
+
+The Place Detail page shows full details of a place, including a map and the nearest transit stations. Users can add the place to one of their itineraries from this page.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        \texttt{Back to Places} link & Goes back to the full places list. \\
+        Map & Embedded Leaflet map with a marker on the place. \\
+        Nearby Transit Stations & Lists transit stations within walking distance and the distance in meters. \\
+        \texttt{Add to Itinerary} dropdown plus \texttt{Add} button & Pick one of your trips and add this place as a stop. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Transit}
+
+The Transit page shows the three transit routes and a station picker. Selecting a station loads its arrivals, departures, the routes that serve it, and any nearby landmarks or eateries.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        Route cards & Show route name and service hours, display only. \\
+        \texttt{Select a station} dropdown & Loads the schedule for the chosen station. \\
+        Serving Routes badges & Show which transit lines stop at the selected station. \\
+        Arrivals table & Lists incoming vehicles with their route label, type, and arrival time. \\
+        Departures table & Same for departures. \\
+        Nearby Places cards & Tappable cards for landmarks and eateries within walking distance. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{News}
+
+The News page shows news posts for the regions the user is subscribed to. Posts can carry an attached safety alert.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        Region filter pills & Switch between specific regions or All Regions. \\
+        News card & Tapping records the view in the database. \\
+        Severity badge (green / yellow / red) & Tells you how important the post is at a glance. \\
+        Red safety alert box inside a card & Means the post has an attached safety alert. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Report}
+
+The Report page is a two-column page. The right side has a form for submitting a new incident report. The left side lists the user's past reports along with the verification status given by an admin.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        Region dropdown & Pick which region the incident happened in. \\
+        Category dropdown & Pick a category like Theft, Road Hazard, Crowd, Safety, or Noise. \\
+        \texttt{Low} / \texttt{Medium} / \texttt{High} severity buttons & Pill toggle for severity. \\
+        Description textarea & The only field that requires typing. \\
+        \texttt{Submit Report} button & Sends the report to the database for an admin to review. \\
+        My Reports column (left) & Shows past submissions with their status (Pending, Confirmed, Rejected). \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Trips}
+
+The Trips page lists the user's itineraries. The user can create a new trip with a title and date range, and tap a card to open the detail page.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        \texttt{+ New} button & Opens a form to create a new itinerary. \\
+        Trip name input & Title for the itinerary. \\
+        Date pickers & Start and end dates, native date picker so no typing. \\
+        \texttt{Create} button & Saves the itinerary. \\
+        Trip card & Tap to open the detail page. \\
+        \texttt{Delete} text button & Removes the itinerary and all of its items. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Itinerary Detail}
+
+The Itinerary Detail page shows the full plan for one trip, including each stop with its planned time and notes. The user can edit or remove any item, and tap a place name to open its detail page.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        \texttt{My Itineraries} back link & Goes back to the trip list. \\
+        Place name (blue link) & Opens the place detail page. \\
+        \texttt{Edit} button on an item & Opens an inline form to change the notes and planned time. \\
+        \texttt{Save} / \texttt{Cancel} buttons & Save or discard the edit. \\
+        \texttt{Remove} button & Deletes the item from the itinerary. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+% ===========================================================================
+\section{Using the Application as an Administrator}
+
+Admins log in through the admin toggle on the login page. Each admin is assigned to one region and can only manage content for that region. The bottom navbar gives admins three direct tabs (Dashboard, Reports, News), and the dashboard stat cards link to the other admin pages.
+
+\subsection{Admin Dashboard}
+
+The Admin Dashboard gives an overview of the assigned region. Stat cards link to other admin pages, and the recent pending reports preview shows the three most recent unreviewed reports for a quick look.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        \texttt{Pending Reports} stat card & Goes to the Reports tab filtered to pending. \\
+        \texttt{News Posts} stat card & Goes to the News management page. \\
+        \texttt{Places} stat card & Goes to the Manage Places page. \\
+        \texttt{Routes} stat card & Goes to the Manage Transit Routes page. \\
+        \texttt{Logout} button (top right) & Ends the admin session. \\
+        Recent pending reports preview & Three most recent unreviewed reports for quick review. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Verify Reports}
+
+The Verify Reports page is where admins review user-submitted incident reports for their region. Filter tabs narrow the list by verification status. Confirm and Reject buttons update the status in the database.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        \texttt{All} / \texttt{Pending} / \texttt{Confirmed} / \texttt{Rejected} filter buttons & Filter the report list by status. \\
+        \texttt{Confirm} button (green) & Marks the report as verified. \\
+        \texttt{Reject} button (red) & Marks the report as rejected. \\
+        Status badge & Shows the current verification state. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Manage News}
+
+The Manage News page is used to create and view news posts for the admin's region. Posts can include an optional safety alert with a specific affected area.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        \texttt{+ New Post} button & Opens the news creation form. \\
+        Title input & Headline for the news post. \\
+        \texttt{Low} / \texttt{Medium} / \texttt{High} severity buttons & Pill toggle for severity. \\
+        Body textarea & Content of the news post. \\
+        \texttt{Include Safety Alert} checkbox & Toggles the optional alert fields. \\
+        Alert type dropdown & Pick from Road Closure, Crowd, Weather, Construction, Protest, or Other. \\
+        Affected area input & Describes which area the alert covers. \\
+        \texttt{Publish} button & Creates the post and makes it visible to subscribers. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Manage Places}
+
+The Manage Places page is used to add new places to the admin's region. The form picks a place type and shows fields for that type's specialization data.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        Place name input & Display name of the place. \\
+        Address input & Street address. \\
+        Coordinates input & Latitude and longitude pair. \\
+        Region dropdown & Which region the place belongs to. \\
+        Place type dropdown & Pick Landmark, Eatery, or Transit Station. \\
+        Type-specific fields & Hours for landmarks, average cost for eateries, station code for transit stations. \\
+        \texttt{Add Place} button & Inserts the place plus its specialization in one transaction. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Manage Transit Routes}
+
+The Manage Transit Routes page is used to create and remove transit routes and to link stations and vehicles to each route as stops.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{lX}
+        \toprule
+        \textbf{Element} & \textbf{What it does} \\
+        \midrule
+        Add a New Route form & Route name and service hours fields, plus an Add Route button. \\
+        Existing Routes list & Shows each route with Manage Stops and Delete buttons. \\
+        \texttt{Manage Stops} button & Expands the route to show its stops and an Add Stop form. \\
+        Add Stop form & Two dropdowns (station and transit vehicle) and an Add Stop button. \\
+        \texttt{Remove} button on a stop & Removes the station-vehicle pair from the route. \\
+        \texttt{Delete} button on a route & Removes the route and cascades through its stops. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+% ===========================================================================
+\section{All Supported Functionalities}
+
+The pages described above cover the main functionalities supported by Urban Scout:
+\begin{itemize}
+    \item user login
+    \item admin login
+    \item browsing regions and subscribing or unsubscribing
+    \item browsing places by region or by type (landmarks, eateries, transit)
+    \item viewing place details with map and nearby transit stations
+    \item viewing transit routes and station schedules with arrivals and departures
+    \item viewing nearby places from a transit station
+    \item reading regional news and safety alerts
+    \item submitting incident reports
+    \item viewing user itineraries and managing items
+    \item creating and deleting itineraries
+    \item verifying or rejecting incident reports as an admin
+    \item creating news posts with optional safety alerts as an admin
+    \item adding new places and their subtypes as an admin
+    \item adding transit routes and linking station-vehicle stops as an admin
+\end{itemize}
+
+Each of these functions interacts with the relational database through dedicated backend endpoints, and the interface is structured so that all of them are reachable within a few clicks.
+
+% ===========================================================================
+\section{Tips for Smooth Usage}
+
+For the smoothest experience:
+\begin{itemize}
+    \item Ensure the database is fully loaded with the seeded data.
+    \item Ensure both backend and frontend servers are running.
+    \item Use the seeded email accounts provided with the project.
+    \item Keep the backend connected to the correct MySQL database.
+    \item Refresh the page after backend or database changes if needed.
+\end{itemize}
+
+\end{document}

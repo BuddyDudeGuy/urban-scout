@@ -1,0 +1,140 @@
+\documentclass[11pt,letterpaper]{article}
+
+% ---------- Page geometry ----------
+\usepackage[margin=1in]{geometry}
+
+% ---------- Graphics and floats ----------
+\usepackage{graphicx}
+\usepackage{float}
+
+% ---------- Tables ----------
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% ---------- Captions ----------
+\usepackage[font=small,labelfont=bf]{caption}
+
+% ---------- Lists ----------
+\usepackage{enumitem}
+\setlist{itemsep=2pt, topsep=4pt}
+
+% Paragraph spacing: blank line between paragraphs, but keep first-line indent
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{1.5em}
+
+% ---------- Colors ----------
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0.0,0.5,0.0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0.0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.94}
+\definecolor{inlinecode}{HTML}{0B4F8E}
+
+% Color inline code so identifiers stand out from prose without being loud.
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{{\color{inlinecode}\oldtexttt{#1}}}
+
+% ---------- Listings ----------
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single
+}
+\lstset{style=mystyle}
+
+% Section start control: each \section begins on a fresh page so sections don't split awkwardly across pages
+\usepackage{etoolbox}
+\usepackage{needspace}
+\preto\section{\clearpage}
+\preto\subsection{\needspace{6\baselineskip}}
+\preto\subsubsection{\needspace{5\baselineskip}}
+\newcommand{\boldheading}[1]{\needspace{6\baselineskip}\noindent\textbf{#1}}
+
+% Discourage orphan and widow lines so paragraphs don't strand single lines at page boundaries
+\widowpenalty=10000
+\clubpenalty=10000
+
+% Allow ragged bottoms instead of stretching content to fill page heights
+\raggedbottom
+
+% MySQL keyword highlighting for SQL listings
+\lstdefinelanguage{MySQL}{
+    morekeywords={
+        SELECT, FROM, WHERE, INSERT, INTO, VALUES, UPDATE, SET, DELETE,
+        CREATE, TABLE, DATABASE, SCHEMA, DROP, ALTER, ADD, COLUMN, MODIFY,
+        PRIMARY, KEY, FOREIGN, REFERENCES, NOT, NULL, DEFAULT, AUTO_INCREMENT,
+        UNIQUE, INDEX, CONSTRAINT, CHECK, ON, DELETE, CASCADE, RESTRICT,
+        JOIN, INNER, LEFT, RIGHT, OUTER, FULL, CROSS, USING, AS,
+        GROUP, BY, ORDER, ASC, DESC, HAVING, LIMIT, OFFSET, DISTINCT, UNION,
+        AND, OR, NOT, IN, BETWEEN, LIKE, IS, EXISTS, ANY, ALL,
+        INT, INTEGER, BIGINT, SMALLINT, TINYINT, DECIMAL, NUMERIC, FLOAT, DOUBLE,
+        CHAR, VARCHAR, TEXT, BLOB, DATE, DATETIME, TIMESTAMP, TIME, YEAR, BOOLEAN,
+        BEGIN, COMMIT, ROLLBACK, TRANSACTION, START, SAVEPOINT,
+        IF, THEN, ELSE, ELSEIF, END, CASE, WHEN, WHILE, DO, FOR, LOOP,
+        PROCEDURE, FUNCTION, TRIGGER, VIEW, RETURNS, RETURN, DECLARE,
+        GRANT, REVOKE, USER, ROLE, PRIVILEGES, IDENTIFIED,
+        TRUE, FALSE, COUNT, SUM, AVG, MIN, MAX, NOW, CURRENT_TIMESTAMP
+    },
+    sensitive=false,
+    morecomment=[l]{--},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]',
+    morestring=[b]"
+}
+
+% Bash style listing for shell commands
+\lstdefinelanguage{Bash}{
+    morekeywords={
+        cd, ls, mkdir, rm, cp, mv, cat, echo, export, source, sudo,
+        npm, npx, node, git, docker, mysql, pdflatex, curl, wget, chmod
+    },
+    sensitive=true,
+    morecomment=[l]{\#},
+    morestring=[b]',
+    morestring=[b]"
+}
+
+% ---------- Hyperref last ----------
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue]{hyperref}
+
+% Limit TOC depth to sections + subsections only (no sub-subsections) so it stays compact
+\setcounter{tocdepth}{2}
+
+% ---------- Title metadata ----------
+\title{Urban Scout: Unified Mobile Tourist Assistant \\ Final Project Report}
+\author{Group 61 \\ Sean Kim \\ Muhtasim Ishmam \\ Talha Hussain Mahr}
+\date{Winter 2026}
+
+\begin{document}
+
+\input{sections/00-titlepage}
+\newpage
+
+\input{sections/01-abstract}
+
+\tableofcontents
+\newpage
+
+\input{sections/02-introduction}
+\input{sections/03-design}
+\input{sections/04-implementation}
+\input{sections/05-interface}
+\input{sections/06-user-guide}
+\input{sections/07-references}
+
+\end{document}
