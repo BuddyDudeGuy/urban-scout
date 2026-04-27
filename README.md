@@ -10,10 +10,8 @@ CPSC 471 - University of Calgary - Winter 2026 - Group 61
 
 - [Team](#team)
 - [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Sample Accounts](#sample-accounts)
 - [Project Structure](#project-structure)
-- [Database Reset](#database-reset)
+
 ---
 
 ## Team
@@ -37,75 +35,7 @@ CPSC 471 - University of Calgary - Winter 2026 - Group 61
 | Auth | express-session |
 | Database | MySQL 8.4 + mysql2 (raw SQL, no ORM) |
 
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- MySQL 8.0+
-- npm
-
-### 1. Set Up the Database
-
-```bash
-mysql -u root -p < database/schema.sql
-mysql -u root -p UrbanScout < database/seed.sql
-mysql -u root -p UrbanScout -e "source database/stored-procedures.sql"
-```
-
-### 2. Configure the Server
-
-```bash
-cd server
-cp .env.example .env
-```
-
-Edit `.env` with your MySQL credentials:
-
-```
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=yourpassword
-DB_NAME=UrbanScout
-PORT=3001
-SESSION_SECRET=change-me-to-something-random
-```
-
-### 3. Install Dependencies
-
-```bash
-cd server && npm install
-cd ../client && npm install
-```
-
-### 4. Start the App
-
-```bash
-# Terminal 1 - Backend
-cd server && npm start
-
-# Terminal 2 - Frontend
-cd client && npm run dev
-```
-
-App runs at **http://localhost:5173**
-
----
-
-## Sample Accounts
-
-No passwords - just enter the email on the login page.
-
-| Role | Email |
-|:-----|:------|
-| User | `alice@example.com` |
-| User | `bob@example.com` |
-| User | `charlie@example.com` |
-| Admin | `soyeon@urbanscout.io` |
-| Admin | `minho@urbanscout.io` |
-| Admin | `jisoo@urbanscout.io` |
+For setup instructions, sample accounts, and how to use the app, see the [User Manual](User%20Manual.pdf).
 
 ---
 
@@ -135,14 +65,4 @@ urban-scout/
                               presentations, diagrams, final report)
 ```
 
----
-
-## Database Reset
-
-```bash
-mysql -u root -p UrbanScout < database/drop.sql
-mysql -u root -p < database/schema.sql
-mysql -u root -p UrbanScout < database/seed.sql
-mysql -u root -p UrbanScout -e "source database/stored-procedures.sql"
-```
 
