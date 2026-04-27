@@ -1,50 +1,19 @@
-<div align="center">
-
 # Urban Scout
 
-**Unified Mobile Tourist Assistant for Seoul**
+Tourist web app for Seoul — find places, check transit, read news, report incidents, and plan trips. All in one spot.
 
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.4-4479A1?logo=mysql&logoColor=white)
-![Tailwind](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
-![Express](https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white)
-
-CPSC 471 - Data Base Management Systems | University of Calgary | Winter 2026 | Group 61
-
-</div>
+CPSC 471 — University of Calgary — Winter 2026 — Group 61
 
 ---
 
 ## Table of Contents
 
 - [Team](#team)
-- [What Is This?](#what-is-this)
-- [Features](#features)
-  - [For Tourists](#for-tourists-users)
-  - [For Admins](#for-admins)
-  - [Minimal Keyboard Input](#minimal-keyboard-input)
 - [Tech Stack](#tech-stack)
-- [Database Design](#database-design)
-  - [Entity Count](#entity-count-16-tables)
-  - [Weak Entities](#weak-entities-2)
-  - [Specializations](#specializations)
-  - [Stored Procedures](#stored-procedures-9)
-- [How It Meets the Project Requirements](#how-it-meets-the-project-requirements)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Set Up the Database](#1-set-up-the-database)
-  - [Configure the Server](#2-configure-the-server)
-  - [Install Dependencies](#3-install-dependencies)
-  - [Start the App](#4-start-the-app)
-- [Example Walkthrough](#example-walkthrough)
-  - [As a User](#as-a-user)
-  - [As an Admin](#as-an-admin)
-  - [Sample Accounts](#sample-accounts)
+- [Sample Accounts](#sample-accounts)
 - [Project Structure](#project-structure)
 - [Database Reset](#database-reset)
-- [Documentation](#documentation)
-
 ---
 
 ## Team
@@ -57,51 +26,6 @@ CPSC 471 - Data Base Management Systems | University of Calgary | Winter 2026 | 
 
 ---
 
-## What Is This?
-
-Urban Scout is a mobile-friendly web app for tourists visiting Seoul, South Korea. Instead of switching between Google Maps, TripAdvisor, transit apps, and local news sites, everything is in one place.
-
-**The problem:** Tourists end up juggling a bunch of different apps just to find restaurants, check bus times, read local news, and plan their day.
-
-**Our solution:** One app that puts all of that in one place, backed by a relational database that ties landmarks, eateries, transit stations, news, safety alerts, and trip planning together.
-
----
-
-## Features
-
-### For Tourists (Users)
-
-- **Subscribe to regions** you are visiting (Downtown Seoul, Gangnam, Hongdae)
-- **Browse places** with filters for landmarks, eateries, and transit stations
-- **View place details** with a map, nearby transit stations, and walking distances
-- **Check transit schedules** with arrival and departure times for any station
-- **Read news and safety alerts** for your subscribed regions
-- **Report incidents** like theft, road hazards, or overcrowding
-- **Track your reports** and see if an admin has verified them
-- **Plan trips** by creating itineraries and adding places to visit
-
-### For Admins
-
-- **Dashboard** with stats on pending reports, news posts, and places
-- **Verify or reject** incident reports submitted by users
-- **Publish news posts** with optional safety alerts for specific regions
-
-### Minimal Keyboard Input
-
-> [!TIP]
-> The app is built so you rarely need to type anything. Most interactions are just clicking or tapping.
-
-- Clickable region cards with subscribe buttons
-- Toggle buttons to filter places (Landmarks / Eateries / Transit)
-- Dropdown menus for categories and regions
-- Pill-shaped severity selectors (Low / Medium / High)
-- Date pickers for itinerary planning
-- One-tap actions like "Add to Itinerary" and "Remove"
-
-The only things you actually have to type are the incident description and itinerary title.
-
----
-
 ## Tech Stack
 
 | Layer | Technology |
@@ -111,69 +35,7 @@ The only things you actually have to type are the incident description and itine
 | Maps | Leaflet + react-leaflet |
 | Backend | Express 5 + Node.js |
 | Auth | express-session |
-| Database | MySQL 8.4 + mysql2 |
-
-> [!IMPORTANT]
-> **No ORM.** All database queries are raw SQL using prepared statements.
-
----
-
-## Database Design
-
-### Entity Count: 16 Tables
-
-```
-User, Admin, Region, Place, Landmark, Eatery, TransitStation,
-TransitRoute, PublicTransit, Bus, Train, NewsPost, SafetyAlert,
-IncidentReport, Itinerary, ItineraryItem
-```
-
-Plus 9 junction/relationship tables:
-
-```
-Subscribes_to, Views, Verifies, References, Services,
-Serves, Stops_At, Arrival_times, Departure_times
-```
-
-### Weak Entities (2)
-
-- **SafetyAlert** identified by `(NewsID, AlertNo)` through NewsPost
-- **ItineraryItem** identified by `(ItineraryID, ItemNo)` through Itinerary
-
-### Specializations
-
-- **Place** specializes into Landmark, Eatery, and TransitStation (disjoint, partial)
-- **PublicTransit** specializes into Bus and Train (disjoint, partial)
-
-### Stored Procedures (9)
-
-| Procedure | What It Does |
-|:----------|:-------------|
-| `sp_register_user` | Creates a new user inside a transaction |
-| `sp_get_places_by_region` | Filters places by type with conditional JOINs |
-| `sp_create_itinerary_with_items` | Atomic multi-row insert from a JSON array |
-| `sp_verify_incident` | Verifies a report and optionally auto-creates a news post |
-| `sp_nearby_places` | Finds places within walking distance of a station |
-| `sp_get_transit_schedule` | Returns 4 result sets across 6+ tables |
-| `sp_get_user_feed` | Personalized news feed via subquery on subscriptions |
-| `sp_get_popular_places` | Trending places ranked by itinerary reference count |
-| `sp_get_region_summary` | Full region breakdown with counts by type |
-
----
-
-## How It Meets the Project Requirements
-
-| Requirement | Status | Details |
-|:------------|:------:|:--------|
-| 8+ unique entity types | Met | 16 entities |
-| 1+ weak entity type | Met | SafetyAlert and ItineraryItem |
-| 10+ relationship types | Met | 14 relationships |
-| 2+ end-user types | Met | User and Admin with separate dashboards |
-| Web-based mobile interface | Met | React SPA with responsive Tailwind CSS |
-| Minimal keyboard input | Met | Dropdowns, toggles, date pickers, pill buttons |
-| Stored procedures | Met | 9 stored procedures with transactions and error handling |
-| Matches proposal | Met | All proposed features implemented |
-| Complete DDL and DML | Met | Full schema.sql and seed.sql provided |
+| Database | MySQL 8.4 + mysql2 (raw SQL, no ORM) |
 
 ---
 
@@ -220,208 +82,30 @@ cd ../client && npm install
 
 ### 4. Start the App
 
-Open two terminals:
-
 ```bash
 # Terminal 1 - Backend
 cd server && npm start
-```
 
-```bash
 # Terminal 2 - Frontend
 cd client && npm run dev
 ```
 
-The app will be running at **http://localhost:5173**
+App runs at **http://localhost:5173**
 
 ---
 
-## Example Walkthrough
+## Sample Accounts
 
-### As a User
+No passwords — just enter the email on the login page.
 
-**Login with:** `alice@example.com`
-
-<details>
-<summary><strong>1. Home Page</strong></summary>
-
-You see a hero image of Seoul and three region cards. Alice is already subscribed to Downtown Seoul and Hongdae.
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| <kbd>Subscribe</kbd> button on a region card | Adds that region to your feed so you see its places, news, and alerts |
-| <kbd>Subscribed</kbd> button (blue, filled) | Means you are already following this region. Click it again to unsubscribe |
-| <kbd>Logout</kbd> (top right corner of hero) | Ends your session and takes you back to the login page |
-
-</details>
-
-<details>
-<summary><strong>2. Places Tab</strong></summary>
-
-Browse all places across your subscribed regions.
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| <kbd>Landmarks</kbd> / <kbd>Eateries</kbd> / <kbd>Transit</kbd> / <kbd>All</kbd> buttons | Filter the place cards by type. Only one filter is active at a time |
-| <kbd>Filter by Region</kbd> dropdown | Narrows the list to places in a specific region |
-| Clicking a place card | Opens the detail page for that place with a map, info, and nearby stations |
-
-**On the Place Detail page:**
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| <kbd>Back to Places</kbd> link (top left) | Goes back to the full places list |
-| Map | Shows the exact location of the place using Leaflet |
-| Nearby Transit Stations section | Lists transit stations within walking distance and how far they are in meters |
-| <kbd>Add to Itinerary</kbd> dropdown + <kbd>Add</kbd> button | Pick one of your trip plans from the dropdown, then hit Add to include this place in that itinerary |
-| "No itineraries yet" link | If you have not created any trips, this links you to the Trips tab to make one first |
-
-</details>
-
-<details>
-<summary><strong>3. Transit Tab</strong></summary>
-
-See all 3 transit routes (Line 1, Line 2, Line 4).
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| Route cards | Show the route name and service hours. These are display-only |
-| <kbd>Select a station</kbd> dropdown | Pick a station to load its full schedule |
-| Serving Routes badges (blue pills) | Show which transit lines stop at the selected station |
-| Arrivals table | Lists all incoming transit vehicles with their route label, type, and arrival time |
-| Departures table | Same thing but for departures |
-| Nearby Places cards (below schedule) | Clickable cards showing landmarks and eateries within walking distance of the station. Click one to go to its detail page |
-
-</details>
-
-<details>
-<summary><strong>4. News Tab</strong></summary>
-
-Read news posts for your subscribed regions.
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| Region filter dropdown | Filters news to a specific region or shows all |
-| Clicking a news card | Records that you viewed this post (tracked in the Views table) |
-| Severity badge (green/yellow/red pill) | Shows how important the post is at a glance |
-| Red safety alert box inside a card | Means this news post has an official safety alert attached with a specific affected area |
-
-</details>
-
-<details>
-<summary><strong>5. Report Tab</strong></summary>
-
-Submit an incident report about something you saw.
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| Region dropdown | Pick which region the incident happened in |
-| Category dropdown | Choose from predefined types like Theft, Road Hazard, Crowd, Safety, Noise, Other |
-| <kbd>Low</kbd> / <kbd>Medium</kbd> / <kbd>High</kbd> severity buttons | Tap one to set how serious the incident is. These are pill-shaped toggles, not a text field |
-| Description textarea | The only field that requires typing. Describe what happened |
-| <kbd>Submit Report</kbd> button | Sends the report to the database. An admin for that region will review it |
-| Green success card | Appears after a successful submission. Does not auto-disappear |
-| <kbd>Report Another</kbd> button | Clears the form so you can submit a new report |
-| <kbd>View My Reports</kbd> link | Takes you to a page showing all your submitted reports and their verification status (Pending, Confirmed, or Rejected) |
-
-</details>
-
-<details>
-<summary><strong>6. Trips Tab</strong></summary>
-
-Plan your itineraries and add places to visit.
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| <kbd>+ New</kbd> button (top right) | Opens a form to create a new itinerary |
-| Trip name input | Give your itinerary a name like "Seoul Weekend" |
-| Date picker fields | Select start and end dates for your trip. Uses the native date picker so no typing needed |
-| <kbd>Create</kbd> button | Saves the itinerary |
-| Clicking an itinerary card | Opens the detail page showing all planned stops |
-| <kbd>Delete</kbd> text button | Removes the entire itinerary and all its items |
-
-**On the Itinerary Detail page:**
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| <kbd>My Itineraries</kbd> back link | Goes back to the list of all your trips |
-| Place name (blue link) | Clicking it opens the place detail page for that stop |
-| <kbd>Edit</kbd> button on an item | Opens an inline form where you can change the notes and planned time |
-| <kbd>Save</kbd> / <kbd>Cancel</kbd> buttons (in edit mode) | Save your changes or discard them |
-| <kbd>Remove</kbd> button | Deletes that item from the itinerary |
-| "Browse Places" link (empty state) | If the itinerary has no items, this links you to the Places tab to add some |
-
-</details>
-
----
-
-### As an Admin
-
-**Login with:** `soyeon@urbanscout.io` (toggle to "Admin" on the login page first)
-
-<details>
-<summary><strong>1. Dashboard</strong></summary>
-
-See stats for your assigned region (Downtown Seoul).
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| <kbd>Pending Reports</kbd> stat card | Clickable. Takes you to the Reports tab filtered to pending reports |
-| <kbd>News Posts</kbd> stat card | Clickable. Takes you to the News management tab |
-| Places and Total Reports stat cards | Display-only counters |
-| <kbd>Logout</kbd> button (top right) | Ends your admin session |
-| Recent pending reports preview | Shows the 3 most recent unreviewed reports for a quick look |
-
-</details>
-
-<details>
-<summary><strong>2. Reports Tab</strong></summary>
-
-Review and verify incident reports submitted by users in your region.
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| <kbd>All</kbd> / <kbd>Pending</kbd> / <kbd>Confirmed</kbd> / <kbd>Rejected</kbd> filter buttons | Filter the report list by verification status |
-| <kbd>Confirm</kbd> button (green) | Marks the report as verified. This means an admin has confirmed the incident is real |
-| <kbd>Reject</kbd> button (red) | Marks the report as rejected. The incident was not verified |
-| Status badge on each report | Shows the current verification state (unreviewed, confirmed, or rejected) |
-
-</details>
-
-<details>
-<summary><strong>3. News Tab</strong></summary>
-
-Create and view news posts for your assigned region.
-
-| Button / Element | What It Does |
-|:-----------------|:-------------|
-| <kbd>+ New Post</kbd> button | Opens the news creation form |
-| <kbd>Cancel</kbd> button | Closes the form without saving |
-| Title input | Give the news post a headline |
-| <kbd>Low</kbd> / <kbd>Medium</kbd> / <kbd>High</kbd> severity buttons | Set the importance level of the post |
-| Body textarea | Write the content of the news post |
-| Include Safety Alert (optional) checkbox | Toggles extra fields for attaching a safety alert |
-| Alert type dropdown | Choose the type of alert (Road Closure, Crowd, Weather, Construction, Protest, Other) |
-| Affected area input | Describe what area is affected |
-| <kbd>Publish</kbd> button | Creates the news post and makes it visible to all users subscribed to your region |
-
-</details>
-
----
-
-### Sample Accounts
-
-> [!NOTE]
-> These accounts are pre-loaded in the seed data. No passwords needed, just enter the email.
-
-| Role | Email | Region |
-|:-----|:------|:-------|
-| User | `alice@example.com` | Subscribed to Downtown Seoul, Hongdae |
-| User | `bob@example.com` | Subscribed to Gangnam |
-| User | `charlie@example.com` | Subscribed to all 3 regions |
-| Admin | `soyeon@urbanscout.io` | Downtown Seoul |
-| Admin | `minho@urbanscout.io` | Gangnam |
-| Admin | `jisoo@urbanscout.io` | Hongdae |
+| Role | Email |
+|:-----|:------|
+| User | `alice@example.com` |
+| User | `bob@example.com` |
+| User | `charlie@example.com` |
+| Admin | `soyeon@urbanscout.io` |
+| Admin | `minho@urbanscout.io` |
+| Admin | `jisoo@urbanscout.io` |
 
 ---
 
@@ -430,34 +114,30 @@ Create and view news posts for your assigned region.
 ```
 urban-scout/
     database/
-        schema.sql            Full database DDL (25 tables)
-        seed.sql              Sample data for all tables
+        schema.sql            DDL for all tables
+        seed.sql              Sample data
         stored-procedures.sql 9 stored procedures
-        drop.sql              Clean teardown script
+        drop.sql              Teardown script
     server/
         index.js              Express entry point
         db.js                 MySQL connection pool
-        middleware/auth.js    Session-based auth guards
-        routes/               8 route files (auth, regions, places,
+        middleware/auth.js    Session auth
+        routes/               Route files (auth, regions, places,
                               transit, news, incidents, itineraries,
                               subscriptions)
     client/
         src/
-            App.jsx           Router with 14 routes
-            context/          Auth context provider
-            pages/            13 page components
-            components/       Shared UI components (Navbar,
-                              PlaceCard, MapView, etc.)
-    docs/                     All project documentation (proposal,
-                              progress reports, ERD, UML,
-                              presentations, evaluation form)
+            App.jsx           Router
+            context/          Auth context
+            pages/            Page components
+            components/       Shared UI (Navbar, PlaceCard, MapView, etc.)
+    docs/                     Project docs (proposal, reports,
+                              presentations, diagrams, final report)
 ```
 
 ---
 
 ## Database Reset
-
-If you need to start fresh:
 
 ```bash
 mysql -u root -p UrbanScout < database/drop.sql
@@ -466,26 +146,3 @@ mysql -u root -p UrbanScout < database/seed.sql
 mysql -u root -p UrbanScout -e "source database/stored-procedures.sql"
 ```
 
----
-
-## Documentation
-
-All project documentation is in the `docs/` folder:
-
-| File | Description |
-|:-----|:------------|
-| `Project Proposal Gr 61.pdf` | Original project proposal |
-| `Progress Report 1.pdf` - `Progress Report 3.pdf` | Intermediate submissions |
-| `ERD Diagram.drawio.png` | Entity-Relationship Diagram |
-| `UML_1.drawio.png` | UML Class Diagram |
-| `Presentation_Gr61_CPSC471.pdf` | Project presentation |
-| `Project Specification CPSC 471-.pdf` | Assignment specification |
-| `cpsc471-project-eval.pdf` | Evaluation rubric |
-
----
-
-<div align="center">
-
-CPSC 471 - University of Calgary - Winter 2026
-
-</div>
